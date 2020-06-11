@@ -77,13 +77,10 @@ class Window(Tk):
             self.host_strip_control = str(self.host_strip)
 
     def callback(self,evt):
-        self.evt = evt
-        w = self.evt.widget
-        print(w)
-        index = int(w.curselection()[0])
-        value = w.get(index)
-        print('You selected item %d: "%s"' % (index, value))
-
+        secili_eleman = self.birinci_bolum.focus()
+        secili_eleman_bilgi = self.birinci_bolum.item(secili_eleman)
+        self.ikinci_bolum_baslik1_text.delete('1.0', END) 
+        self.ikinci_bolum_baslik1_text.insert(INSERT, secili_eleman_bilgi)
 
     def govde(self):
 
@@ -113,10 +110,10 @@ class Window(Tk):
                              self.Host_Strip_www(), self.Url_Crawler_SECTION_1(),
                             ]
         )
-
+		
         self.birinci_bolum = ttk.Treeview(self.hedef) #Treeview bize bir şema sunar.
         #Bu şema sayesinde programımızı ağaçlandırma şeklinde kategoriye ayırabiliyoruz.
-        self.birinci_bolum.bind('<<ListboxSelect>>', self.callback) #bing özelliği bir event tanımlamamıza
+        self.birinci_bolum.bind('<<TreeviewSelect>>', self.callback) #bing özelliği bir event tanımlamamıza
         #yardımcı oluyor <button-1> ise sol click özelliğidir
 
         self.birinci_bolum["columns"] = ("bir", "iki", "uc", "dort", "bes") #sekmelerimizi burda oluşturduk

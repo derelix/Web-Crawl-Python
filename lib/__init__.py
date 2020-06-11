@@ -1,0 +1,1 @@
+from .hedef_birinci_bolum import *

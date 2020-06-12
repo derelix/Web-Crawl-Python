@@ -1,12 +1,20 @@
-from tkinter import *
-from tkinter import ttk, messagebox
-from tkinter import Tk
-import requests
+# -*- coding: utf-8 -*-
+
+""":arg
+Bu kodların yazım aşamasında bana çok katkısı bulunan @Z3R0D0WN'a çok teşekkür ederim.
+"""
+
+import os
+import json
 import random
-from bs4 import BeautifulSoup
 import socket
+import requests
 import datetime
 import threading
+from tkinter import *
+from tkinter import Tk
+from bs4 import BeautifulSoup
+from tkinter import ttk, messagebox
 
 try:
     from googlesearch import search
@@ -33,6 +41,7 @@ class Window(Tk):
         self.a = 1 #hedef kutusuna kayıt ederken sütun sırası
 
 
+
     def Request(self):
 
         if self.hedef_veriyi_al.get(): # Butondan gelen taranacak siteyi burada alıyoruz
@@ -52,18 +61,23 @@ class Window(Tk):
         #   self.text1.insert(END, str(value)+": "+str(keys) +"\n")
 
 
+
     def Host_Look(self):
         # Düzenli gözükmesi için verilen site url'sini,  split işlemine sokarak temiz bir host elde ediyoruz.
         self.host_strip = self.host.split("://")[1]
 
 
+
     def Ip_Look(self):
+
         # Verdiğimiz sitenin ip bilgisini veriyor
         self.host_ip = socket.gethostbyname(self.host_strip)
+
         #if self.host_ip:
         #    self.label_ip_text.insert(END, str(self.host_ip))
         #else:
         #    self.label_ip_text.insert(END, "İp bulunamadı...")
+
 
 
     def Host_Strip_www(self):
@@ -76,13 +90,63 @@ class Window(Tk):
 
             self.host_strip_control = str(self.host_strip)
 
-    def callback(self,evt):
-        self.evt = evt
-        w = self.evt.widget
-        print(w)
-        index = int(w.curselection()[0])
-        value = w.get(index)
-        print('You selected item %d: "%s"' % (index, value))
+
+
+    def cikis(self):
+
+        if messagebox.askokcancel("Çıkış", "Çıkmak istediğinize emin misiniz?"):
+
+            w.destroy()
+
+
+
+    def ikinci_bolum_func(self,evt):
+
+        self.secili_eleman = self.birinci_bolum.focus() #sütun bilgilerini aldık
+        self.secili_eleman_bilgi = self.birinci_bolum.item(self.secili_eleman, "text")
+        #sütun bilgileri içinden No kısmını alıyoruz
+
+        self.ikinci_bolum_baslik1_text.delete('1.0', END)
+        self.ikinci_bolum_baslik2_text.delete('1.0', END)
+
+        try: # Response bölümüne HEADERS yazdırdık
+
+            for key, value in self.req_istek.headers.items():
+
+                """if "application/json" in value:
+                    self.ikinci_bolum_baslik3_text.insert(END, json.dumps(self.req_istek.text))
+                else:
+                    pass"""
+
+                self.ikinci_bolum_baslik1_text.insert(END, str(key) + ": " + str(value) + "\n")
+
+
+                self.ikinci_bolum_baslik2_text.insert(END, str(key) + ": " + str(value) + "\n")
+
+        except:
+
+            pass
+
+        try: # Response bölümüne kaynak kodlaırnı yazdırdık
+
+            self.ikinci_bolum_baslik2_text.insert(END, '\n\n')
+            #self.ikinci_bolum_baslik2_text.insert(INSERT, self.req_istek.content)
+
+            # kaynak kod çok büyük olduğu için yorum satırına aldım.
+            #
+
+        except:
+            self.ikinci_bolum_baslik2_text.insert(END, '\n\n')
+            #self.ikinci_bolum_baslik2_text.insert(INSERT, self.req_istek.content)
+
+
+
+
+
+
+        #self.ikinci_bolum_func_dosya_okuma_json = json.load(self.ikinci_bolum_func_dosya_okuma)
+        #self.ikinci_bolum_baslik1_text.insert(INSERT, self.ikinci_bolum_func_dosya_okuma.read().encode("'utf-8"))
+
 
 
     def govde(self):
@@ -116,18 +180,21 @@ class Window(Tk):
 
         self.birinci_bolum = ttk.Treeview(self.hedef) #Treeview bize bir şema sunar.
         #Bu şema sayesinde programımızı ağaçlandırma şeklinde kategoriye ayırabiliyoruz.
-        self.birinci_bolum.bind('<<ListboxSelect>>', self.callback) #bing özelliği bir event tanımlamamıza
+        #self.birinci_bolum.bind('<<ListboxSelect>>, <button-1>', self.callback) #bing özelliği bir event tanımlamamıza
         #yardımcı oluyor <button-1> ise sol click özelliğidir
+        self.birinci_bolum.bind('<<TreeviewSelect>>', self.ikinci_bolum_func)
 
-        self.birinci_bolum["columns"] = ("bir", "iki", "uc", "dort", "bes") #sekmelerimizi burda oluşturduk
-        self.birinci_bolum.column("#0", width=30, minwidth=70, anchor="center")
+        self.birinci_bolum["columns"] = ("sifir","bir", "iki", "uc", "dort", "bes") #sekmelerimizi burda oluşturduk
+        self.birinci_bolum.column("#0", width=5, minwidth=10, anchor="center")
+        self.birinci_bolum.column("sifir", width=30, minwidth=70, anchor="center")
         self.birinci_bolum.column("bir", width=10, minwidth=30, anchor="center")
         self.birinci_bolum.column("iki", width=200, minwidth=100, anchor="center")
         self.birinci_bolum.column("uc", width=15, minwidth=15, anchor="center")  # stretch=tk.NO boyutu değiştirememe özelliği
         self.birinci_bolum.column("dort", width=5, minwidth=140, anchor="center")
         self.birinci_bolum.column("bes", width=15, minwidth=15, anchor="center")
 
-        self.birinci_bolum.heading("#0", text="Host", anchor='center')
+        self.birinci_bolum.heading("#0", text="No", anchor='center')
+        self.birinci_bolum.heading("sifir", text="Host", anchor='center')
         self.birinci_bolum.heading("bir", text="Method", anchor='center')
         self.birinci_bolum.heading("iki", text="URL", anchor='center')
         self.birinci_bolum.heading("uc", text="Status", anchor='center')
@@ -143,6 +210,29 @@ class Window(Tk):
         self.ikinci_bolum.add(self.ikinci_bolum_baslik1, text="Requests")
         self.ikinci_bolum_baslik1_text = Text(self.ikinci_bolum_baslik1, width=200, height=30)
         self.ikinci_bolum_baslik1_text.pack()
+
+
+        # sağ tık yapıldığında oluşacak olaylar
+        def ikinci_bolum_menu_encode_decode():
+            print("Encode/Decode")
+
+        def ikinci_bolum_menu_istek():
+            print("İstek")
+
+        def ikinci_bolum_menu_dongu():
+            print("Döngü")
+
+        ikinci_bolum_menu = Menu(w, tearoff=0)
+        ikinci_bolum_menu.add_command(label="Encode/Decode", command=ikinci_bolum_menu_encode_decode)
+        ikinci_bolum_menu.add_command(label="İstek", command=ikinci_bolum_menu_istek)
+        ikinci_bolum_menu.add_command(label="Döngü", command=ikinci_bolum_menu_dongu)
+
+        def pencere(event):
+            ikinci_bolum_menu.post(event.x_root, event.y_root)
+
+        self.ikinci_bolum_baslik1_text.bind("<Button-2>", pencere)
+
+
 
         self.ikinci_bolum_baslik2 = Frame(self.ikinci_bolum)
         self.ikinci_bolum.add(self.ikinci_bolum_baslik2, text="Response")
@@ -345,11 +435,20 @@ class Window(Tk):
                     continue
 
         try:
+
             for i in self.DIRECTORY_2:
-                self.Section_3_Request = requests.get(self.host + '/' + i, timeout=0.8,
-                                                      headers={'User-Agent': self.Random_Useragent})
+
+                self.Section_3_Request = requests.get(
+                            self.host +
+                            '/' +
+                            i,
+                            timeout=0.8,
+                            headers={'User-Agent': self.Random_Useragent})
+
                 self.Section_3_Content = self.Section_3_Request.content
+
                 links = re.findall('"((http|ftp)s?://.*?)"', self.Section_3_Content)
+
                 for t in links:
                     if self.host_strip_control in t[0]:
                         self.TOTAL_URL.add(t[0])
@@ -369,18 +468,21 @@ class Window(Tk):
             self.URL_LIST.add(str(jj))
 
 
-
-
-
         threading.Thread(target=self.Tarama).start()
         # self.CONTENT_URL_LIST'da url'ler yer alıyor
         # self.NOT_CONTENT_URL_LIST'da ise kaynak'da yer alan fakat aynı domaine ait olmayan URL'ler
 
 
 
-    def ISTEK(self, veri):
+
+
+    def ISTEK(self, veri,istek_arttir):
+
+        self.istek_arttir = istek_arttir
         self.veri = veri
+
         try:
+
             self.req_istek = requests.get(str(self.veri), timeout=0.8)
             self.headers = self.req_istek.headers
 
@@ -393,39 +495,64 @@ class Window(Tk):
 
 
         if "http" in self.veri and "https" in self.veri:
-            self.http_veri = self.veri
-        else:
+
             self.http_veri = self.veri
 
-        content_type = None
+        else:
+
+            self.http_veri = self.veri
+
+        self.content_type = ""
+
         for v,k in self.headers.items():
-            if v == "Content-Type" and ";" in k:
-                content_type = k.split(';')[0]
+            if v == 'Content-Type':
+                if ";" in k:
+                    self.content_type = k.split(';')[0]
+                else:
+                    self.content_type = k
             else:
-                content_type = k
+                if v == "Content-Type":
+                    self.content_type = k
 
         folder1 = self.birinci_bolum.insert(
                                                 "",
                                                 'end',
-                                                text=str(self.host_strip),
-                                                values=("GET",
+                                                text=str(self.istek_arttir),
+                                                values=(str(self.host_strip),"GET",
                                                 str(self.veri),
                                                 str(self.req_istek.status_code),
                                                 str(len(self.req_istek.content)),
-                                                str(content_type),
+                                                str(self.content_type),
                                                 ))
+
+        """        self.data = {}
+        self.data['site'] = str(self.req_istek.url)
+        self.data['headers'] = str(self.req_istek.headers)
+        self.data['content'] = str(self.req_istek.content)
+        #response bölümüne yazarken kullanıcağımız data
+
+        #0.json vb. dosyayı açarak yazıyoruz
+        self.dosya_olustur = open('data/' + str(self.istek_arttir) + '.json', 'w+')
+
+        self.dosya_olustur.write(json.dumps(self.data))"""
+
+
+
 
 
     def Tarama(self):
         thread = []
+        self.tarama_sayi = 0
         for i in list(self.URL_LIST):
-            self.ISTEK(i)
-
-
+            self.ISTEK(i, self.tarama_sayi)
+            self.tarama_sayi += 1
+            # tarama_sayi: Her yaptığımız isteğe bir sayı değeri veriyoruz.
+            #request ve responsu gösterirken bu değer ile dosyayı çağırmamız gerekiyor
 
 
 if __name__ == "__main__":
     w = Window()
     w.govde()
     w.mainloop()
+
 

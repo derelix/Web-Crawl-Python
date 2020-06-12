@@ -90,8 +90,6 @@ class Window(Tk):
 
             self.host_strip_control = str(self.host_strip)
 
-<<<<<<< HEAD
-
 
     def cikis(self):
 
@@ -149,13 +147,11 @@ class Window(Tk):
         #self.ikinci_bolum_baslik1_text.insert(INSERT, self.ikinci_bolum_func_dosya_okuma.read().encode("'utf-8"))
 
 
-=======
     def callback(self,evt):
         secili_eleman = self.birinci_bolum.focus()
         secili_eleman_bilgi = self.birinci_bolum.item(secili_eleman)
         self.ikinci_bolum_baslik1_text.delete('1.0', END) 
         self.ikinci_bolum_baslik1_text.insert(INSERT, secili_eleman_bilgi)
->>>>>>> b73f37442b70c01da119f1952990b7e4f93a5959
 
     def govde(self):
 
@@ -188,11 +184,8 @@ class Window(Tk):
 		
         self.birinci_bolum = ttk.Treeview(self.hedef) #Treeview bize bir şema sunar.
         #Bu şema sayesinde programımızı ağaçlandırma şeklinde kategoriye ayırabiliyoruz.
-<<<<<<< HEAD
         #self.birinci_bolum.bind('<<ListboxSelect>>, <button-1>', self.callback) #bing özelliği bir event tanımlamamıza
-=======
         self.birinci_bolum.bind('<<TreeviewSelect>>', self.callback) #bing özelliği bir event tanımlamamıza
->>>>>>> b73f37442b70c01da119f1952990b7e4f93a5959
         #yardımcı oluyor <button-1> ise sol click özelliğidir
         self.birinci_bolum.bind('<<TreeviewSelect>>', self.ikinci_bolum_func)
 

@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
 """:arg
-Bu kodların yazım aşamasında bana çok katkısı bulunan @Z3R0D0WN'a çok teşekkür ederim.
+Bu kodların yazım aşamasında bana katkısı bulunan @Z3R0D0WN'a çok teşekkür ederim.
 """
 
 import os
-import json
-import time
 import random
 import socket
+import base64
 import requests
 import datetime
 import threading
+import urllib.parse
 from tkinter import *
 from tkinter import Tk
 from bs4 import BeautifulSoup
@@ -146,6 +146,56 @@ class Window(Tk):
 
 
 
+    # ENCODE / DECODE BÖLÜMÜ FONKSİYONLARI
+    def encode_decode_bolum_encode(self):
+
+        try:
+            self.encode_decode_text2.delete('1.0', END)
+            self.encode_veri = self.encode_decode_text.get("1.0",'end')
+            self.encode_decode_text2.insert(END, urllib.parse.quote(self.encode_veri))
+
+        except:
+            pass
+
+
+    def encode_decode_bolum_decode(self):
+
+        try:
+            self.encode_decode_text2.delete('1.0', END)
+            self.decode_veri = self.encode_decode_text.get("1.0",'end')
+            self.encode_decode_text2.insert(END, urllib.parse.unquote(self.decode_veri))
+
+        except:
+
+            pass
+
+    def encode_decode_bolum_base64_encode(self):
+
+        try:
+            self.encode_decode_text2.delete('1.0', END)
+            self.base64_encode_veri = self.encode_decode_text.get("1.0", 'end')
+            self.base64_encode_veri_temiz = base64.b64encode(self.base64_encode_veri.encode('utf-8'))
+            self.encode_decode_text2.insert(END, self.base64_encode_veri_temiz)
+
+
+        except:
+
+            pass
+
+    def encode_decode_bolum_base64_decode(self):
+
+        try:
+            self.encode_decode_text2.delete('1.0', END)
+            self.base64_decode_veri = self.encode_decode_text.get("1.0", 'end') #ilk karakterden sona kadar şifrele
+            self.base64_decode_veri_temiz = base64.b64decode(self.base64_decode_veri.encode('utf-8'))
+            self.encode_decode_text2.insert(END, self.base64_decode_veri_temiz.decode('utf-8'))
+
+        except:
+
+            pass
+
+
+
 
 
         #self.ikinci_bolum_func_dosya_okuma_json = json.load(self.ikinci_bolum_func_dosya_okuma)
@@ -205,17 +255,6 @@ class Window(Tk):
         self.birinci_bolum.heading("dort", text="Lenght", anchor='center')
         self.birinci_bolum.heading("bes", text="MIME type", anchor='center')
 
-
-#------------------- Hedef bölümündeki cevap kısmı ----------------------
-
-        self.ikinci_bolum = ttk.Notebook(self.hedef) #bu sefer ana bölüm içinde bir sekme oluşturduk
-
-        self.ikinci_bolum_baslik1 = Frame(self.ikinci_bolum)
-        self.ikinci_bolum.add(self.ikinci_bolum_baslik1, text="Requests")
-        self.ikinci_bolum_baslik1_text = Text(self.ikinci_bolum_baslik1, width=200, height=30)
-        self.ikinci_bolum_baslik1_text.pack()
-
-
         # sağ tık yapıldığında oluşacak olaylar
         def ikinci_bolum_menu_encode_decode():
             print("Encode/Decode")
@@ -231,10 +270,23 @@ class Window(Tk):
         ikinci_bolum_menu.add_command(label="İstek", command=ikinci_bolum_menu_istek)
         ikinci_bolum_menu.add_command(label="Döngü", command=ikinci_bolum_menu_dongu)
 
+
         def pencere(event):
             ikinci_bolum_menu.post(event.x_root, event.y_root)
 
-        self.ikinci_bolum_baslik1_text.bind("<Button-2>", pencere)
+
+        self.birinci_bolum.bind("<Button-2>", pencere)
+
+
+#------------------- Hedef bölümündeki cevap kısmı ----------------------
+
+        self.ikinci_bolum = ttk.Notebook(self.hedef) #bu sefer ana bölüm içinde bir sekme oluşturduk
+
+        self.ikinci_bolum_baslik1 = Frame(self.ikinci_bolum)
+        self.ikinci_bolum.add(self.ikinci_bolum_baslik1, text="Requests")
+        self.ikinci_bolum_baslik1_text = Text(self.ikinci_bolum_baslik1, width=200, height=30)
+        self.ikinci_bolum_baslik1_text.pack()
+
 
 
 
@@ -279,7 +331,7 @@ class Window(Tk):
                             relief=SUNKEN,
                             bd=1,
         )
-        self.encode_decode_text.pack(anchor=W)
+        self.encode_decode_text.pack(anchor=W, padx=20)
 
         self.encode_decode_text2 = Text(
                             self.encode_decode,
@@ -290,7 +342,7 @@ class Window(Tk):
                             relief=SUNKEN,
                             bd=1,
         )
-        self.encode_decode_text2.pack(anchor=W)
+        self.encode_decode_text2.pack(anchor=W, padx=20)
 
         '''
         anchor = posizyonu ayarlıyoruz
@@ -308,7 +360,7 @@ class Window(Tk):
         self.encode_decode_url_encode = Button(
             self.encode_decode,
             text="Url Encode",
-            command = None,
+            command = self.encode_decode_bolum_encode,
             font=("open sans", 13, "bold"),
             width=11,
             height=2
@@ -322,7 +374,7 @@ class Window(Tk):
         self.encode_decode_url_decode = Button(
             self.encode_decode,
             text="Url Decode",
-            command = None,
+            command = self.encode_decode_bolum_decode,
             font=("open sans", 13, "bold"),
             width=11,
             height=2
@@ -332,7 +384,7 @@ class Window(Tk):
         self.encode_decode_base64_encode = Button(
             self.encode_decode,
             text="Base64 Encode",
-            command = None,
+            command = self.encode_decode_bolum_base64_encode,
             font=("open sans", 13, "bold"),
             width=11,
             height=2,
@@ -343,13 +395,59 @@ class Window(Tk):
         self.encode_decode_base64_decode = Button(
             self.encode_decode,
             text="Base64 Decode",
-            command = None,
+            command = self.encode_decode_bolum_base64_decode,
             font=("open sans", 13, "bold"),
             width=11,
             height=2,
 
         )
         self.encode_decode_base64_decode.place(x=1120, y=100)
+
+
+        # SELAM YAZMAMMIN BİR NEDENİ YOK, YENİ METHODLAR EKLEYESİYE KADAR HAZIR OLARAK BIRAKTIM
+        self.encode_decode_base64_decode_selam = Button(
+            self.encode_decode,
+            text="selam",
+            command = None,
+            font=("open sans", 13, "bold"),
+            width=11,
+            height=2,
+
+        )
+        self.encode_decode_base64_decode_selam.place(x=1000, y=150)
+
+        self.encode_decode_base64_decode_selam2 = Button(
+            self.encode_decode,
+            text="selam2",
+            command = None,
+            font=("open sans", 13, "bold"),
+            width=11,
+            height=2,
+
+        )
+        self.encode_decode_base64_decode_selam2.place(x=1120, y=150)
+
+        self.encode_decode_base64_decode_selam3 = Button(
+            self.encode_decode,
+            text="selam3",
+            command = None,
+            font=("open sans", 13, "bold"),
+            width=11,
+            height=2,
+
+        )
+        self.encode_decode_base64_decode_selam3.place(x=1000, y=200)
+
+        self.encode_decode_base64_decode_selam4 = Button(
+            self.encode_decode,
+            text="selam4",
+            command = self.encode_decode_bolum_base64_decode,
+            font=("open sans", 13, "bold"),
+            width=11,
+            height=2,
+
+        )
+        self.encode_decode_base64_decode_selam4.place(x=1120, y=200)
 
 
         # -------------------------------------- LOG BÖLÜMÜ --------------------------------------

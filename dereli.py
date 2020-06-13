@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 """:arg
-Bu kodların yazım aşamasında bana çok fazla katkısı bulunan @Z3R0D0WN'a teşekkür ederim.
+Bu kodların yazım aşamasında bana çok katkısı bulunan @Z3R0D0WN'a çok teşekkür ederim.
 """
 
 import os
 import json
+import time
 import random
 import socket
 import requests
@@ -26,7 +27,7 @@ except ImportError:
 class Window(Tk):
     def __init__(self):
         super().__init__()
-        self.title('DERELI v.1') #pencere başlığı
+        self.title('DERELI') #pencere başlığı
         """enini boyunu, pencere konumu (nerde dursun açıldığında)
         1366x768 dünya çapında en çok kullanılan genişlik ve yükseklik"""
         self.geometry('1366x768+150+150')
@@ -39,6 +40,7 @@ class Window(Tk):
         self.USERAGENT = [agent.strip() for agent in open('src/useragent.txt')]
         self.Random_Useragent = random.choice(self.USERAGENT) # İstek yaparken kullanılacak rastgele bir useragent
         self.a = 1 #hedef kutusuna kayıt ederken sütun sırası
+        self.tarama_sayi = 0
 
 
 
@@ -97,6 +99,8 @@ class Window(Tk):
         if messagebox.askokcancel("Çıkış", "Çıkmak istediğinize emin misiniz?"):
 
             w.destroy()
+            sys.exit()
+
 
 
 
@@ -381,48 +385,59 @@ class Window(Tk):
     def Url_Crawler_SECTION_1(self): # sayfa içerisindeki bütün url'leri çekiyoruz
         html_page = self.req_text
         soup = BeautifulSoup(html_page,'html.parser')
-        links1 = re.findall('"((http|ftp)s?://.*?)"', html_page)
-        links2 = re.findall("'((http|ftp)s?://.*?)'", html_page)
+        links1 = re.findall('"((/|//|http|https).*?)"', html_page)
+        links2 = re.findall('"((/|//|http|https).*?)"', html_page)
         if links1:
             for t in links1:
-                if self.host_strip_control in t[0]:
-                    self.URL_LIST.add(t[0])
-                else:
-                    self.NOT_CONTENT_URL_LIST.add(t[0])
+                self.URL_LIST.add(t[0])
+                if self.host_strip in t:
+                    self.DIRECTORY_2.add(str(t[0]))
 
         if links2:
             for t2 in links2:
-                if self.host_strip_control in t2[0]:
-                    self.URL_LIST.add(t2[0])
-                else:
-                    self.NOT_CONTENT_URL_LIST.add(t2[0])
+                self.URL_LIST.add(t2[0])
+                if self.host_strip in t2:
+                    self.DIRECTORY_2.add(str(t2[0]))
+
 
         for i in list(self.URL_LIST):
-            if self.host_strip_control in i.split('/')[2]:  # [2] = domain
-                try:
+
+            try:
+
+                if self.host_strip_control in i.split('/')[2]:  # [2] = domain
+
                     if i.split('/')[3]:  # Neden 12 tane derseniz en son ihtimale kadar parçalama yapmaya çalıştım. Arttırılabilir
-                        self.DIRECTORY_2.add(str(i.split('/')[3]))
+                        self.DIRECTORY_2.add(self.host + "/" + str(i.split('/')[3]))
+
                     if i.split('/')[4]:
-                       self.DIRECTORY_2.add(str(i.split('/')[3] + '/' + i.split('/')[4]))
+                       self.DIRECTORY_2.add(self.host + "/" + str(i.split('/')[3] + '/' + i.split('/')[4]))
+
                     if i.split('/')[5]:
-                        self.DIRECTORY_2.add(str(i.split('/')[3] + '/' + i.split('/')[4]) + '/' + i.split('/')[5])
+                        self.DIRECTORY_2.add(self.host + "/" + str(i.split('/')[3] + '/' + i.split('/')[4]) + '/' + i.split('/')[5])
+
                     if i.split('/')[6]:
-                        self.DIRECTORY_2.add(str(i.split('/')[3] + '/' + i.split('/')[4]) + '/' + i.split('/')[5] + '/' +i.split('/')[6])
+                        self.DIRECTORY_2.add(self.host + "/" + str(i.split('/')[3] + '/' + i.split('/')[4]) + '/' + i.split('/')[5] + '/' +i.split('/')[6])
+
                     if i.split('/')[7]:
-                        self.DIRECTORY_2.add(str(i.split('/')[3] + '/' + i.split('/')[4] + '/' + i.split('/')[5] + '/' + i.split('/')[6]) + '/' + i.split('/')[7])
+                        self.DIRECTORY_2.add(self.host + "/" + str(i.split('/')[3] + '/' + i.split('/')[4] + '/' + i.split('/')[5] + '/' + i.split('/')[6]) + '/' + i.split('/')[7])
+
                     if i.split('/')[8]:
-                        self.DIRECTORY_2.add(str(i.split('/')[3] + '/' + i.split('/')[4] + '/' + i.split('/')[5]) + '/' +i.split('/')[6] + '/' + i.split('/')[7] + '/' + i.split('/')[8])
+                        self.DIRECTORY_2.add(self.host + "/" + str(i.split('/')[3] + '/' + i.split('/')[4] + '/' + i.split('/')[5]) + '/' +i.split('/')[6] + '/' + i.split('/')[7] + '/' + i.split('/')[8])
+
                     if i.split('/')[9]:
-                        self.DIRECTORY_2.add(str(
+                        self.DIRECTORY_2.add(self.host + "/" + str(
                             i.split('/')[3] + '/' + i.split('/')[4] + '/' + i.split('/')[5] + '/' + i.split('/')[6]) + '/' + i.split('/')[7] + '/' + i.split('/')[8] + '/' + i.split('/')[9])
+
                     if i.split('/')[10]:
-                        self.DIRECTORY_2.add(str(
+                        self.DIRECTORY_2.add(self.host + "/" + str(
                             i.split('/')[3] + '/' + i.split('/')[4] + '/' + i.split('/')[5] + '/' + i.split('/')[6] + '/' + i.split('/')[7] + '/' + i.split('/')[8] + '/' + i.split('/')[9] + '/' +i.split('/')[10]))
+
                     if i.split('/')[11]:
-                        self.DIRECTORY_2.add(str(
+                        self.DIRECTORY_2.add(self.host + "/" + str(
                             i.split('/')[3] + '/' + i.split('/')[4] + '/' + i.split('/')[5] + '/' + i.split('/')[6] + '/' + i.split('/')[7] + '/' + i.split('/')[8] + '/' + i.split('/')[9] + '/' +i.split('/')[10] + '/' + i.split('/')[11]))
+
                     if i.split('/')[11]:
-                        self.DIRECTORY_2.add(str(i.split('/')[3] + '/' + i.split('/')[4] + '/' + i.split('/')[5] + '/' + i.split('/')[6] + '/' + i.split('/')[7] + '/' + i.split('/')[8] + '/' + i.split('/')[9] + '/' +i.split('/')[10] + '/' + i.split('/')[11] + '/' + i.split('/')[11]))
+                        self.DIRECTORY_2.add(self.host + "/" + str(i.split('/')[3] + '/' + i.split('/')[4] + '/' + i.split('/')[5] + '/' + i.split('/')[6] + '/' + i.split('/')[7] + '/' + i.split('/')[8] + '/' + i.split('/')[9] + '/' +i.split('/')[10] + '/' + i.split('/')[11] + '/' + i.split('/')[11]))
                         """
                         test/test1/test2
                         |
@@ -431,44 +446,33 @@ class Window(Tk):
                         |____________test1/test2/test3
                         |_______________test1/test2/test3/test4 ...
                         """
-                except:
-                    continue
+            except:
+                # https veya http hallettik
+                # / veya // la başlayanları alıcaz
+                # URLLIST HEPSİ
+                # DIRECTORY'DE HTTP Lİ LER
+                try:
 
-        try:
+                    if i[0] == '/' or i[1] != "/":
 
-            for i in self.DIRECTORY_2:
-
-                self.Section_3_Request = requests.get(
-                            self.host +
-                            '/' +
-                            i,
-                            timeout=0.8,
-                            headers={'User-Agent': self.Random_Useragent})
-
-                self.Section_3_Content = self.Section_3_Request.content
-
-                links = re.findall('"((http|ftp)s?://.*?)"', self.Section_3_Content)
-
-                for t in links:
-                    if self.host_strip_control in t[0]:
-                        self.TOTAL_URL.add(t[0])
+                        self.DIRECTORY_2.add( str(self.host) + str(i) )
                     else:
-                        self.NOT_CONTENT_URL_LIST.add(t[0])
+                        if i[0] == "/" and i[1] == "/":
+                            self.DIRECTORY_2.add(str(i))
 
-        except requests.exceptions.ConnectionError:
-            pass
-        except requests.exceptions.Timeout:
-            pass
-        except requests.exceptions.SSLError:
-            pass
-        except:
-            pass
-
-        for jj in list(self.TOTAL_URL):
-            self.URL_LIST.add(str(jj))
+                except:
+                    pass
 
 
-        threading.Thread(target=self.Tarama).start()
+
+        # burda thread kullanmamım nedeni: Program tarama yaparken kitlenmemesi ve aynı anda birçok işi yapmak için
+        t1 = threading.Thread(target=self.Url_Crawler_SECTION_2)
+        t1.daemon = True
+        t1.start()
+
+        t2 = threading.Thread(target=self.Tarama)
+        t2.daemon = True
+        t2.start()
         # self.CONTENT_URL_LIST'da url'ler yer alıyor
         # self.NOT_CONTENT_URL_LIST'da ise kaynak'da yer alan fakat aynı domaine ait olmayan URL'ler
 
@@ -537,13 +541,64 @@ class Window(Tk):
         self.dosya_olustur.write(json.dumps(self.data))"""
 
 
+    def Url_Crawler_SECTION_2(self):
+        for i in list(self.DIRECTORY_2):
+            try:
+                self.Section_3_Request = requests.get(
+                            i,
+                            timeout=0.8,
+                            headers={'User-Agent': self.Random_Useragent})
+
+                self.Section_3_Content = self.Section_3_Request.text
+
+                links = re.findall('"((/|//|http|https).*?)"', self.Section_3_Content)
+                links2 = re.findall("'((/|//|http|https).*?)'", self.Section_3_Content)
+
+                if links:
+
+                    for t in links:
+
+                        if self.host_strip_control in t[0]:
+                            self.ISTEK(str(t[0]), self.tarama_sayi)
+                            self.tarama_sayi +=1
+
+                        else:
+                            if t[0][0] == "/":
+
+                                self.ISTEK(self.host + t[0], self.tarama_sayi)
+                                self.tarama_sayi += 1
+
+                            else:
+
+                                if t[0][1] == "/":
+                                    self.ISTEK(t[0], self.tarama_sayi)
+
+                if links2:
+
+                    for t2 in links2:
+
+                        if self.host_strip_control in t2[0]:
+                            self.ISTEK(str(t2[0]), self.tarama_sayi)
+                            self.tarama_sayi += 1
+
+                        else:
+                            self.ISTEK(self.host + t2[0], self.tarama_sayi)
+                            self.tarama_sayi += 1
+
+            except requests.exceptions.ConnectionError:
+                pass
+            except requests.exceptions.Timeout:
+                pass
+            except requests.exceptions.SSLError:
+                pass
+            except:
+                pass
 
 
 
     def Tarama(self):
         thread = []
-        self.tarama_sayi = 0
-        for i in list(self.URL_LIST):
+        for i in list(self.TOTAL_URL):
             self.ISTEK(i, self.tarama_sayi)
             self.tarama_sayi += 1
             # tarama_sayi: Her yaptığımız isteğe bir sayı değeri veriyoruz.
@@ -553,6 +608,7 @@ class Window(Tk):
 if __name__ == "__main__":
     w = Window()
     w.govde()
+    w.protocol("WM_DELETE_WINDOW", w.cikis) #eğer kapatma tuşuna basılırsa gerçekleşicek olay - w.cikis fonskiyon
     w.mainloop()
 
 

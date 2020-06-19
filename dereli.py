@@ -627,7 +627,7 @@ class Window(Tk):
 
         try:
 
-            self.req_istek = requests.get(str(self.veri), timeout=2)
+            self.req_istek = requests.get(str(self.veri), timeout=0.8)
             self.headers = self.req_istek.headers
 
         except requests.exceptions.ConnectionError:

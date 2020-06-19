@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
-""":arg
+"""
 Bu kodların yazım aşamasında bana katkısı bulunan @Z3R0D0WN'a çok teşekkür ederim.
 """
 
+
+
 import os
+import time
 import random
 import socket
 import base64
@@ -15,16 +18,14 @@ import urllib.parse
 from tkinter import *
 from tkinter import Tk
 from bs4 import BeautifulSoup
+from tkinter import filedialog
 from tkinter import ttk, messagebox
 
-try:
-    from googlesearch import search
-except ImportError:
-    print("No module named 'google' found")
 
 
 
 class Window(Tk):
+
     def __init__(self):
         super().__init__()
         self.title('DERELI') #pencere başlığı
@@ -73,12 +74,18 @@ class Window(Tk):
     def Ip_Look(self):
 
         # Verdiğimiz sitenin ip bilgisini veriyor
-        self.host_ip = socket.gethostbyname(self.host_strip)
+        try:
 
-        #if self.host_ip:
-        #    self.label_ip_text.insert(END, str(self.host_ip))
-        #else:
-        #    self.label_ip_text.insert(END, "İp bulunamadı...")
+            self.host_ip = socket.gethostbyname(self.host_strip)
+
+            if self.host_ip:
+                self.hedef_ip_bilgisi_text.insert(END, str(self.host_ip))
+
+            else:
+               self.hedef_ip_bilgisi_text.insert(END, "Error")
+        except:
+
+            pass
 
 
 
@@ -182,6 +189,8 @@ class Window(Tk):
 
             pass
 
+
+
     def encode_decode_bolum_base64_decode(self):
 
         try:
@@ -193,10 +202,6 @@ class Window(Tk):
         except:
 
             pass
-
-
-
-
 
         #self.ikinci_bolum_func_dosya_okuma_json = json.load(self.ikinci_bolum_func_dosya_okuma)
         #self.ikinci_bolum_baslik1_text.insert(INSERT, self.ikinci_bolum_func_dosya_okuma.read().encode("'utf-8"))
@@ -213,24 +218,46 @@ class Window(Tk):
         self.secenekler.add(self.hedef, text="Hedef") #Hedef sekmemizi tanımladık
 
         # -------------------------------------- HEDEF BÖLÜMÜ --------------------------------------
+
+        self.hedef_ip_bilgisi = Label(  #Label metin veya resim ekleyeceğimiz zaman kullanıyoruz
+            self.hedef,
+            text="İp Adresi: ", #Label'ın yazısı
+            font=('open sans', 15, "bold") #yazı tipi, boyutu ve  kalın mı olucak italic mi gibi
+        )
+        self.hedef_ip_bilgisi.place(x=20, y=30)
+
+
+        self.hedef_ip_bilgisi_text = Text(
+            self.hedef,
+            width=28,
+            height=1,
+            font = ('open sans', 15)
+        )
+        self.hedef_ip_bilgisi_text.place(x=100, y=30)
+
+
         self.hedef_baslik = Label(  #Label metin veya resim ekleyeceğimiz zaman kullanıyoruz
             self.hedef,
             text="Site: ", #Label'ın yazısı
             font=('open sans', 15, "bold") #yazı tipi, boyutu ve  kalın mı olucak italic mi gibi
         )
 
+
         self.hedef_veriyi_al = Entry( # Burda bir veri girmesini istiyoruz kullanıcıdan
             self.hedef,
         )
+
 
         self.hedef_buton = Button(
             self.hedef,
             text="Tara", #Buton yazısı
             # Buton'a basıldığında çalışacak fonskiyonlar
-            command=lambda: [self.Request(), self.Host_Look(), self.Ip_Look(),
-                             self.Host_Strip_www(), self.Url_Crawler_SECTION_1(),
-                            ]
+            command=lambda: [
+                            self.Request(), self.Host_Look(), self.Ip_Look(),
+                            self.Host_Strip_www(), self.Url_Crawler_SECTION_1(),
+                             ]
         )
+
 
         self.birinci_bolum = ttk.Treeview(self.hedef) #Treeview bize bir şema sunar.
         #Bu şema sayesinde programımızı ağaçlandırma şeklinde kategoriye ayırabiliyoruz.
@@ -255,12 +282,15 @@ class Window(Tk):
         self.birinci_bolum.heading("dort", text="Lenght", anchor='center')
         self.birinci_bolum.heading("bes", text="MIME type", anchor='center')
 
+
         # sağ tık yapıldığında oluşacak olaylar
         def ikinci_bolum_menu_encode_decode():
             print("Encode/Decode")
 
+
         def ikinci_bolum_menu_istek():
             print("İstek")
+
 
         def ikinci_bolum_menu_dongu():
             print("Döngü")
@@ -296,7 +326,7 @@ class Window(Tk):
         self.ikinci_bolum_baslik2_text.pack()
 
         self.ikinci_bolum_baslik3 = Frame(self.ikinci_bolum)
-        self.ikinci_bolum.add(self.ikinci_bolum_baslik3, text="Json Decode")
+        self.ikinci_bolum.add(self.ikinci_bolum_baslik3, text="Json Ayrıştırma")
         self.ikinci_bolum_baslik3_text = Text(self.ikinci_bolum_baslik3, width=200, height=30)
         self.ikinci_bolum_baslik3_text.pack()
 
@@ -333,6 +363,7 @@ class Window(Tk):
         )
         self.encode_decode_text.pack(anchor=W, padx=20)
 
+
         self.encode_decode_text2 = Text(
                             self.encode_decode,
                             width=80,
@@ -343,6 +374,7 @@ class Window(Tk):
                             bd=1,
         )
         self.encode_decode_text2.pack(anchor=W, padx=20)
+
 
         '''
         anchor = posizyonu ayarlıyoruz
@@ -356,6 +388,7 @@ class Window(Tk):
 
                   S
         '''
+
 
         self.encode_decode_url_encode = Button(
             self.encode_decode,
@@ -381,6 +414,7 @@ class Window(Tk):
         )
         self.encode_decode_url_decode.place(x=1120, y=50)
 
+
         self.encode_decode_base64_encode = Button(
             self.encode_decode,
             text="Base64 Encode",
@@ -391,6 +425,7 @@ class Window(Tk):
 
         )
         self.encode_decode_base64_encode.place(x=1000, y=100)
+
 
         self.encode_decode_base64_decode = Button(
             self.encode_decode,
@@ -404,10 +439,11 @@ class Window(Tk):
         self.encode_decode_base64_decode.place(x=1120, y=100)
 
 
+
         # SELAM YAZMAMMIN BİR NEDENİ YOK, YENİ METHODLAR EKLEYESİYE KADAR HAZIR OLARAK BIRAKTIM
         self.encode_decode_base64_decode_selam = Button(
             self.encode_decode,
-            text="selam",
+            text="example",
             command = None,
             font=("open sans", 13, "bold"),
             width=11,
@@ -418,7 +454,7 @@ class Window(Tk):
 
         self.encode_decode_base64_decode_selam2 = Button(
             self.encode_decode,
-            text="selam2",
+            text="example2",
             command = None,
             font=("open sans", 13, "bold"),
             width=11,
@@ -429,7 +465,7 @@ class Window(Tk):
 
         self.encode_decode_base64_decode_selam3 = Button(
             self.encode_decode,
-            text="selam3",
+            text="example3",
             command = None,
             font=("open sans", 13, "bold"),
             width=11,
@@ -440,7 +476,7 @@ class Window(Tk):
 
         self.encode_decode_base64_decode_selam4 = Button(
             self.encode_decode,
-            text="selam4",
+            text="example4",
             command = self.encode_decode_bolum_base64_decode,
             font=("open sans", 13, "bold"),
             width=11,
@@ -448,6 +484,17 @@ class Window(Tk):
 
         )
         self.encode_decode_base64_decode_selam4.place(x=1120, y=200)
+
+
+
+        # -------------------------------------- Intruder --------------------------------------
+
+
+        self.intruder = Frame(self.secenekler)
+        self.secenekler.add(self.intruder, text="Döngü")
+
+
+
 
 
         # -------------------------------------- LOG BÖLÜMÜ --------------------------------------
@@ -468,34 +515,32 @@ class Window(Tk):
         self.log_kutu.insert(END, "Giriş: "+ str(datetime.datetime.now()) + "\n")
 
 
-        # -------------------------------------- Intruder --------------------------------------
-
-
-        self.intruder = Frame(self.secenekler)
-        self.secenekler.add(self.intruder, text="Döngü")
-
-
         # --------------------------------------------------------------------------------------
         self.secenekler.pack(expand=1, fill="both") #fill yapılıcak dolgudur. Both veriyoruz çünkü her yeri doldurmasını istiyoruz
 
 
 
     def Url_Crawler_SECTION_1(self): # sayfa içerisindeki bütün url'leri çekiyoruz
+
         html_page = self.req_text
-        soup = BeautifulSoup(html_page,'html.parser')
+
         links1 = re.findall('"((/|//|http|https).*?)"', html_page)
-        links2 = re.findall('"((/|//|http|https).*?)"', html_page)
+        links2 = re.findall("'((/|//|http|https).*?)'", html_page)
+
+
         if links1:
+
             for t in links1:
+
                 self.URL_LIST.add(t[0])
-                if self.host_strip in t:
-                    self.DIRECTORY_2.add(str(t[0]))
+
 
         if links2:
+
             for t2 in links2:
+
                 self.URL_LIST.add(t2[0])
-                if self.host_strip in t2:
-                    self.DIRECTORY_2.add(str(t2[0]))
+
 
 
         for i in list(self.URL_LIST):
@@ -545,25 +590,22 @@ class Window(Tk):
                         |_______________test1/test2/test3/test4 ...
                         """
             except:
-                # https veya http hallettik
-                # / veya // la başlayanları alıcaz
-                # URLLIST HEPSİ
-                # DIRECTORY'DE HTTP Lİ LER
+
                 try:
 
-                    if i[0] == '/' or i[1] != "/":
-
+                    if i[0] == '/' and i[1] != "/":
                         self.DIRECTORY_2.add( str(self.host) + str(i) )
+
                     else:
+
                         if i[0] == "/" and i[1] == "/":
-                            self.DIRECTORY_2.add(str(i))
+                            self.DIRECTORY_2.add( "https:" +str(i) )
 
                 except:
-                    pass
 
+                    self.DIRECTORY_2.add(i)
 
-
-        # burda thread kullanmamım nedeni: Program tarama yaparken kitlenmemesi ve aynı anda birçok işi yapmak için
+        # burda thread kullanmamım nedeni: Program tararken kitlenmemesi ve aynı anda birçok işi yapmak için
         t1 = threading.Thread(target=self.Url_Crawler_SECTION_2)
         t1.daemon = True
         t1.start()
@@ -585,7 +627,7 @@ class Window(Tk):
 
         try:
 
-            self.req_istek = requests.get(str(self.veri), timeout=0.8)
+            self.req_istek = requests.get(str(self.veri), timeout=2)
             self.headers = self.req_istek.headers
 
         except requests.exceptions.ConnectionError:
@@ -607,13 +649,21 @@ class Window(Tk):
         self.content_type = ""
 
         for v,k in self.headers.items():
+
             if v == 'Content-Type':
+
                 if ";" in k:
+
                     self.content_type = k.split(';')[0]
+
                 else:
+
                     self.content_type = k
+
             else:
+
                 if v == "Content-Type":
+
                     self.content_type = k
 
         folder1 = self.birinci_bolum.insert(
@@ -640,12 +690,15 @@ class Window(Tk):
 
 
     def Url_Crawler_SECTION_2(self):
+
         for i in list(self.DIRECTORY_2):
+
             try:
                 self.Section_3_Request = requests.get(
                             i,
-                            timeout=0.8,
-                            headers={'User-Agent': self.Random_Useragent})
+                            timeout = 0.8,
+                            headers = {'User-Agent': self.Random_Useragent},
+                            )
 
                 self.Section_3_Content = self.Section_3_Request.text
 
@@ -661,15 +714,15 @@ class Window(Tk):
                             self.tarama_sayi +=1
 
                         else:
-                            if t[0][0] == "/":
+                            if t[0][0] == "/" and t[0][1] != '/':
 
                                 self.ISTEK(self.host + t[0], self.tarama_sayi)
                                 self.tarama_sayi += 1
 
                             else:
 
-                                if t[0][1] == "/":
-                                    self.ISTEK(t[0], self.tarama_sayi)
+                                if t[0][0] == "/" and t[0][1] == '/':
+                                    self.ISTEK("https:" + str(t[0]), self.tarama_sayi)
 
                 if links2:
 
@@ -677,11 +730,18 @@ class Window(Tk):
 
                         if self.host_strip_control in t2[0]:
                             self.ISTEK(str(t2[0]), self.tarama_sayi)
-                            self.tarama_sayi += 1
+                            self.tarama_sayi +=1
 
                         else:
-                            self.ISTEK(self.host + t2[0], self.tarama_sayi)
-                            self.tarama_sayi += 1
+                            if t2[0][0] == "/" and t2[0][1] != '/':
+
+                                self.ISTEK(self.host + t2[0], self.tarama_sayi)
+                                self.tarama_sayi += 1
+
+                            else:
+
+                                if t2[0][0] == "/" and t2[0][1] == '/':
+                                    self.ISTEK("https:" + str(t2[0]), self.tarama_sayi)
 
             except requests.exceptions.ConnectionError:
                 pass
@@ -708,5 +768,4 @@ if __name__ == "__main__":
     w.govde()
     w.protocol("WM_DELETE_WINDOW", w.cikis) #eğer kapatma tuşuna basılırsa gerçekleşicek olay - w.cikis fonskiyon
     w.mainloop()
-
 
